@@ -38,7 +38,7 @@ export default class Card extends Phaser.GameObjects.Group {
         this.front.setTexture(key)
     }
 
-    flipFront() {
+    flipFront(onCompleteCallback) {
         this.back.scale = 1
         this.back.scaleX = 0
 
@@ -55,6 +55,8 @@ export default class Card extends Phaser.GameObjects.Group {
                 const newTimeline = this.scene.tweens.timeline({
                     onComplete: () => {
                         newTimeline.destroy()
+
+                        onCompleteCallback()
                     }
                 })
 
@@ -111,8 +113,9 @@ export default class Card extends Phaser.GameObjects.Group {
 
                 const newTimeline = this.scene.tweens.timeline({
                     onComplete: () => {
-                        onCompleteCallback()
                         newTimeline.destroy()
+
+                        onCompleteCallback()
                     }
                 })
 

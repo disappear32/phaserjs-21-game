@@ -13,7 +13,9 @@ export default class HitButton extends Button {
         }
 
         const callback = function() {
-            scene.hitPlayerCards()
+            scene.hitPlayerCards(() => {
+                
+            })
         }
 
         super(scene, x, y, width, height, key, text, font, callback)

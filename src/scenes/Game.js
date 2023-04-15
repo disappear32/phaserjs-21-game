@@ -145,17 +145,23 @@ export default class Game extends Phaser.Scene {
         this.setPlayerCardBackgroundActive(0, 5) //Подсвечиваем рубашки карт игрока
 
         //Показываем первые две карты дилера и игрока
-        this.hitPlayerCards()
-        this.hitPlayerCards()
-        this.hitDealerCards()
-        this.hitDealerCards()
+        this.hitPlayerCards(() => {
+            this.hitPlayerCards(() => {
+            })
+        })
+        this.hitDealerCards(() => {
+            this.hitDealerCards(() => {
+            })
+        })
     }
 
     finishGame() {
         this.updateRepeatStakeValue(this.stake) //Обновляем сумму в кнопке repeat
         this.updateUI('finish') //Появляются кнопки repeat и change, кнопки hit и stand уезжают вбок
+
         this.setPlayerBackgroundDisable() //Снимаем подсветку с поля игрока
         this.setDealerBackgroundDisable() //Снимаем подсветку с поля дилера
+
         this.setPlayerCardsBackgroundDisable(0, 5) //Снимаем подсветку с рубашки карт игрока
         this.setDealerCardsBackgroundDisable(0, 5) //Снимаем подсветку с рубашки карт дилера
 
@@ -165,7 +171,7 @@ export default class Game extends Phaser.Scene {
             const winSum = this.stake * 2
 
             this.updateTextTopInfo([
-                'You have won',
+                'You have won:',
                 `${winSum} RUB!`
             ])
             this.updateWinBalance(winSum)
@@ -185,69 +191,80 @@ export default class Game extends Phaser.Scene {
     }
 
     standChoose() {
-        this.setDealerBackgroundActive() //Снимаем подсветку с рубашки карт дилера
-        this.setDealerCardBackgroundActive(this.dealerOpenCardsCount, 5) //Снимаем подсветку с поля дилера
+        this.setDealerBackgroundActive() //Подсвечиваем подсветку рубашки карт дилера
+        this.setDealerCardsBackgroundActive(this.dealerOpenCardsCount, 5) //Подсвечиваем поле дилера
 
-        for (let i = 0; i < 4; i++) {
+        this.setPlayerBackgroundDisable() //Снимаем подсветку с рубашки карт игрока
+        this.setPlayerCardsBackgroundDisable(this.playerOpenCardsCount, 5) //Снимаем подсветку с поля игрока
+
+        const hitDealer = () => {
             if (this.dealerValue >= 21 || this.dealerOpenCardsCount == 5) {
                 this.finishGame()
-                return
-            }
-            else {
-                if (this.dealerValue < 17) this.hitDealerCards()
-                else {
-                    this.finishGame()
-                    return
-                }
+            } else {
+                if (this.dealerValue < 17) this.hitDealerCards(hitDealer)
+                else this.finishGame()
+
             }
         }
+
+        hitDealer();
+
     }
 
     repeatChoose() {
-        this.clearGameField() //Очищаем поле игры
-        this.updateTextTopInfo('Take your move!') //Обновляем текст в инфоблоке
-        this.updateBalance(-this.stake) //Обновляем баланс
         this.updateUI('repeat') //Появляются кнопки hit и stand, кнопки repeat и change уезжают вбок
-        this.setPlayerCardBackgroundActive(0, 5) //Подсвечиваем рубашки карт игрока
-        this.setPlayerBackgroundActive() //Подсвечиваем обводку поля игрока
-        this.setDealerBackgroundDisable() //Снимаем подсветку с поля дилера
 
-        const _this = this
-        setTimeout(function () {
-            //Показываем первые две карты дилера и игрока
-            _this.hitPlayerCards()
-            _this.hitPlayerCards()
-            _this.hitDealerCards()
-            _this.hitDealerCards()
-        }, 1000); //Переписать на функцию с ожиданием окончания вращения
+        this.clearGameField(() => { //Очищаем поле игры
+            this.updateTextTopInfo('Take your move!') //Обновляем текст в инфоблоке
+            this.updateBalance(-this.stake) //Обновляем баланс
+
+            this.setPlayerCardBackgroundActive(0, 5) //Подсвечиваем рубашки карт игрока
+            this.setPlayerBackgroundActive() //Подсвечиваем обводку поля игрока
+
+            this.hitPlayerCards(() => {
+                this.hitPlayerCards(() => {
+                })
+            })
+            this.hitDealerCards(() => {
+                this.hitDealerCards(() => {
+                })
+            })
+        })
+
     }
 
     changeChoose() {
-        this.clearGameField() //Очищаем поле игры
-        this.updateTextTopInfo('Make your bet!') //Обновляем текст в инфоблоке
-        this.setPlayerCardsBackgroundDisable(0, 5) //Снимаем подсветку с рубашки карт игрока
         this.updateUI('change') //Появляется ui ставки, кнопки repeat и change уезжают вбок
+
+        this.clearGameField(() => {
+            this.updateTextTopInfo('Make your bet!') //Обновляем текст в инфоблоке
+        })
     }
 
-    clearGameField() {
+    clearGameField(onCompleteCallback) {
         for (let i = 0; i < this.dealerOpenCardsCount; i++) {
-            this.dealerCardsGroup.children.entries[i].flipFront()
+            this.dealerCardsGroup.children.entries[i].flipFront(() => {
+
+            })
         }
         for (let i = 0; i < this.playerOpenCardsCount; i++) {
-            this.playerCardsGroup.children.entries[i].flipFront()
+            this.playerCardsGroup.children.entries[i].flipFront(() => {
+                if (i == this.playerOpenCardsCount - 1) {
+                    this.dealerValue = 0
+                    this.playerValue = 0
+
+                    this.playerOpenCardsCount = 0
+                    this.dealerOpenCardsCount = 0
+
+                    this.dealerCardsInfoBlock.setValueDisable()
+                    this.playerCardsInfoBlock.setValueDisable()
+
+                    onCompleteCallback()
+                }
+            })
         }
-
-        this.dealerValue = 0
-        this.playerValue = 0
-
-        this.playerOpenCardsCount = 0
-        this.dealerOpenCardsCount = 0
-
-        this.dealerCardsInfoBlock.setValueDisable()
-        this.playerCardsInfoBlock.setValueDisable()
-
-        this.resultInfoBlock.setAlpha(0)
     }
+
 
     getResult() {
         const lose = 'Lose 🙄'
@@ -282,6 +299,8 @@ export default class Game extends Phaser.Scene {
                 break;
 
             case 'repeat': {
+                this.resultInfoBlock.hide()
+
                 this.finalUIContainer.hideUI(() => {
                     this.chooseUIContainer.showUI()
                 })
@@ -289,6 +308,8 @@ export default class Game extends Phaser.Scene {
                 break;
 
             case 'change': {
+                this.resultInfoBlock.hide()
+                
                 this.finalUIContainer.hideUI(() => {
                     this.stakeUIContainer.showUI()
                 })
@@ -298,7 +319,7 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    hitPlayerCards() {
+    hitPlayerCards(onCompleteCallback) {
         this.chooseUIContainer.list[0].setDisableState()
         this.chooseUIContainer.list[1].setDisableState()
 
@@ -311,21 +332,24 @@ export default class Game extends Phaser.Scene {
             .flipBack(() => {
                 this.chooseUIContainer.list[0].setActiveState()
                 this.chooseUIContainer.list[1].setActiveState()
+
+                this.updateValue(randomPlayerValue, 'player')
+                this.playerOpenCardsCount++
+
+                if (this.playerOpenCardsCount > 4) {
+                    if (this.playerValue > 21) this.finishGame()
+                    else this.standChoose()
+                } else {
+                    if (this.playerValue > 21) this.finishGame()
+                    if (this.playerValue == 21) this.standChoose()
+                }
+
+                onCompleteCallback()
             })
 
-        this.updateValue(randomPlayerValue, 'player')
-        this.playerOpenCardsCount++
-
-        if (this.playerOpenCardsCount > 4) {
-            if (this.playerValue > 21) this.finishGame()
-            else this.standChoose()
-        } else {
-            if (this.playerValue > 21) this.finishGame()
-            if (this.playerValue == 21) this.standChoose()
-        }
     }
 
-    hitDealerCards() {  //добавить задержку
+    hitDealerCards(onCompleteCallback) {  //добавить задержку
         //Получаю данные о номинале карты и обновляю счетчик дилера
         const randomDealerValue = getRandomValue()
 
@@ -333,11 +357,12 @@ export default class Game extends Phaser.Scene {
             .setFrontTexture(`${randomDealerValue}_${getRandomSuit()}`)
         this.dealerCardsGroup.children.entries[this.dealerOpenCardsCount]
             .flipBack(() => {
-                this.isFlipping = false
+                this.updateValue(randomDealerValue, 'dealer')
+                this.dealerOpenCardsCount++
+
+                onCompleteCallback()
             })
 
-        this.updateValue(randomDealerValue, 'dealer')
-        this.dealerOpenCardsCount++
     }
 
     updateValue(value, role) {
@@ -424,7 +449,7 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    setDealerCardBackgroundActive(startIndex, finishIndex) {
+    setDealerCardsBackgroundActive(startIndex, finishIndex) {
         for (let i = startIndex; i < finishIndex; i++) {
             this.dealerCardsGroup.children.entries[i].setBackgroundActive()
         }

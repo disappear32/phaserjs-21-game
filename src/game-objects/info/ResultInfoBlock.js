@@ -27,29 +27,90 @@ export default class ResultInfoBlock extends Phaser.GameObjects.Container {
         this.setAlpha(0)
 
         scene.add.existing(this)
+
+        //Частицы для выигрыша
+        this.emitterClub = this.createEmitter('club', -75)
+        this.emitterHeart = this.createEmitter('heart', -25)
+        this.emitterDiamond = this.createEmitter('diamond', 25)
+        this.emitterSpade = this.createEmitter('spade', 75)
     }
 
+    createEmitter(texture, margin) {
+        let emitter = this.scene.add.particles(texture).createEmitter({
+            x: this.scene.width / 2 + margin,
+            y: this.scene.width / 8,
+            lifespan: 1500,
+            speed: { min: 250, max: 500 },
+            scale: { start: 0.8, end: 0 },
+            gravityY: 150,
+            blendMode: 'ADD',
+            emitting: false
+        })
+        emitter.stop()
+
+        return emitter;
+    }
+
+
     updateWinText(text) {
-        const vector = Math.random() < 0.5 ? -1 : 1 //Дляя выбора направления, куда будет качаться текст
-        //Нужно добавить еще конфети
+        //Выводим текст выигрыша
         this.list[1].setText(text)
 
-        this.scene.tweens.add({
-            targets: this.list[1],
-            scale: 1.5,
-            ease: 'Sine.easeInOut',
-            rotation: vector * Math.PI / 12,
-            duration: 1200,
-            yoyo: true,
-            repeat: 0
-        });
-
+        //Показываем инфоблок
         this.scene.tweens.add({
             targets: this,
             alpha: 1,
             ease: 'Quart.easeOut',
             duration: 1200
         });
+
+        //Анимируем текст с выигрышем
+        const timeline = this.scene.tweens.timeline({
+            onComplete: () => {
+                timeline.destroy()
+            }
+        })
+
+        timeline.add({
+            targets: this.list[1],
+            scale: 1.2,
+            ease: 'Linear',
+            rotation: Math.PI / 12,
+            duration: 200,
+            onComplete: () => {
+                //Анимашка выигрыша в виде частиц
+                this.emitterClub.explode(16);
+                this.emitterHeart.explode(16);
+                this.emitterDiamond.explode(16);
+                this.emitterSpade.explode(16);
+            }
+        })
+
+        timeline.add({
+            targets: this.list[1],
+            scale: 1.5,
+            ease: 'Linear',
+            rotation: 0,
+            duration: 200
+        })
+
+        timeline.add({
+            targets: this.list[1],
+            scale: 1.2,
+            ease: 'Linear',
+            rotation: -Math.PI / 12,
+            duration: 200
+        })
+
+        timeline.add({
+            targets: this.list[1],
+            scale: 1,
+            ease: 'Linear',
+            rotation: 0,
+            duration: 200
+        })
+
+        timeline.play()
     }
 
     updateText(text) {
@@ -60,6 +121,14 @@ export default class ResultInfoBlock extends Phaser.GameObjects.Container {
             alpha: 1,
             ease: 'Quart.easeOut',
             duration: 1200
+        })
+    }
+
+    hide() {
+        const tween = this.scene.tweens.add({
+            targets: this,
+            alpha: 0,
+            duration: 200
         })
     }
 }
