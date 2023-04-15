@@ -100,7 +100,7 @@ export default class Card extends Phaser.GameObjects.Group {
     flipBack(onCompleteCallback) {
         this.front.scale = 1
         this.front.scaleX = 0
-        
+
         const timeline = this.scene.tweens.timeline({
             onComplete: () => {
                 timeline.destroy()

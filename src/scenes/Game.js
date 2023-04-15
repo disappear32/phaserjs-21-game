@@ -65,7 +65,7 @@ export default class Game extends Phaser.Scene {
             progress.destroy();
         });
 
-        this.load.setPath('assets/');
+        this.load.setPath('assets/')
 
         this.load.image('backTable', 'backTable.jpg')
         this.load.image('bonus', 'bonus.png')
@@ -86,6 +86,14 @@ export default class Game extends Phaser.Scene {
         this.load.image('club', 'club.png')
         this.load.image('diamond', 'diamond.png')
         this.load.image('spade', 'spade.png')
+        this.load.image('dust', 'dust.png')
+
+        this.load.setPath('audio/')
+
+        this.load.audio('click_sound', ['click_sound.ogg', 'click_sound.mp3'])
+        this.load.audio('flip_sound', ['flip_sound.ogg', 'flip_sound.mp3'])
+        this.load.audio('win_sound', ['win_sound.ogg', 'win_sound.mp3'])
+        this.load.audio('lose_sound', ['lose_sound.ogg', 'lose_sound.mp3'])
     }
 
     create() {
@@ -131,6 +139,10 @@ export default class Game extends Phaser.Scene {
 
         //Формируем результирующее сообщение
         this.resultInfoBlock = new ResultInfoBlock(this, 0, 0)
+
+        this.winSound = this.sound.add('win_sound')
+        this.loseSound = this.sound.add('lose_sound')
+        this.flipSound = this.sound.add('flip_sound')
     }
 
     update() {
@@ -176,15 +188,21 @@ export default class Game extends Phaser.Scene {
             ])
             this.updateWinBalance(winSum)
 
+            this.winSound.play()
+
             this.resultInfoBlock.updateWinText(result)
         }
         if (result == 'Draw 🗿') {
             this.updateTextTopInfo(`Refund`)
 
+            this.loseSound.play()
+
             this.resultInfoBlock.updateText(result)
         }
         if (result == 'Lose 🙄') {
             this.updateTextTopInfo(`Try again!`)
+
+            this.loseSound.play()
 
             this.resultInfoBlock.updateText(result)
         }
@@ -309,7 +327,7 @@ export default class Game extends Phaser.Scene {
 
             case 'change': {
                 this.resultInfoBlock.hide()
-                
+
                 this.finalUIContainer.hideUI(() => {
                     this.stakeUIContainer.showUI()
                 })
@@ -320,6 +338,8 @@ export default class Game extends Phaser.Scene {
     }
 
     hitPlayerCards(onCompleteCallback) {
+        this.flipSound.play()
+
         this.chooseUIContainer.list[0].setDisableState()
         this.chooseUIContainer.list[1].setDisableState()
 
@@ -333,9 +353,6 @@ export default class Game extends Phaser.Scene {
                 this.chooseUIContainer.list[0].setActiveState()
                 this.chooseUIContainer.list[1].setActiveState()
 
-                this.updateValue(randomPlayerValue, 'player')
-                this.playerOpenCardsCount++
-
                 if (this.playerOpenCardsCount > 4) {
                     if (this.playerValue > 21) this.finishGame()
                     else this.standChoose()
@@ -347,9 +364,16 @@ export default class Game extends Phaser.Scene {
                 onCompleteCallback()
             })
 
+        this.updateValue(randomPlayerValue, 'player')
+        this.playerOpenCardsCount++
     }
 
-    hitDealerCards(onCompleteCallback) {  //добавить задержку
+    hitDealerCards(onCompleteCallback) {
+        this.flipSound.play()
+
+        this.chooseUIContainer.list[0].setDisableState()
+        this.chooseUIContainer.list[1].setDisableState()
+
         //Получаю данные о номинале карты и обновляю счетчик дилера
         const randomDealerValue = getRandomValue()
 
@@ -357,12 +381,14 @@ export default class Game extends Phaser.Scene {
             .setFrontTexture(`${randomDealerValue}_${getRandomSuit()}`)
         this.dealerCardsGroup.children.entries[this.dealerOpenCardsCount]
             .flipBack(() => {
-                this.updateValue(randomDealerValue, 'dealer')
-                this.dealerOpenCardsCount++
+                this.chooseUIContainer.list[0].setActiveState()
+                this.chooseUIContainer.list[1].setActiveState()
 
                 onCompleteCallback()
             })
 
+        this.updateValue(randomDealerValue, 'dealer')
+        this.dealerOpenCardsCount++
     }
 
     updateValue(value, role) {

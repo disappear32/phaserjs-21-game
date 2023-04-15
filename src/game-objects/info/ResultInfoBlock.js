@@ -48,7 +48,7 @@ export default class ResultInfoBlock extends Phaser.GameObjects.Container {
         })
         emitter.stop()
 
-        return emitter;
+        return emitter
     }
 
 

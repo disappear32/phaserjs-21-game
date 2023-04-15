@@ -17,9 +17,12 @@ export default class Button extends Phaser.GameObjects.Container {
         this.button = this.list[0]
         this.text = this.list[1]
 
+        const sound = this.scene.sound.add('click_sound');
+
         this.button
             .setInteractive({ useHandCursor: true })
             .on('pointerup', () => {
+                sound.play()
                 this.playPressedAnimation()
                 this.callback()
             })
