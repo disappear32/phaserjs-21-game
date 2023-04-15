@@ -230,10 +230,10 @@ export default class Game extends Phaser.Scene {
     }
 
     repeatChoose() {
+        this.updateTextTopInfo('Take your move!') //Обновляем текст в инфоблоке
         this.updateUI('repeat') //Появляются кнопки hit и stand, кнопки repeat и change уезжают вбок
 
         this.clearGameField(() => { //Очищаем поле игры
-            this.updateTextTopInfo('Take your move!') //Обновляем текст в инфоблоке
             this.updateBalance(-this.stake) //Обновляем баланс
 
             this.setPlayerCardBackgroundActive(0, 5) //Подсвечиваем рубашки карт игрока
@@ -252,10 +252,10 @@ export default class Game extends Phaser.Scene {
     }
 
     changeChoose() {
+        this.updateTextTopInfo('Make your bet!') //Обновляем текст в инфоблоке
         this.updateUI('change') //Появляется ui ставки, кнопки repeat и change уезжают вбок
 
         this.clearGameField(() => {
-            this.updateTextTopInfo('Make your bet!') //Обновляем текст в инфоблоке
         })
     }
 
