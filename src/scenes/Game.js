@@ -129,7 +129,7 @@ export default class Game extends Phaser.Scene {
         }
 
         //Создаем кнопки настройки суммы и инфоблок суммы
-        this.stakeUIContainer = new StakeUI(this, 0, 1350, 'change', 'placeBet', 'stakeButton')
+        this.stakeUIContainer = new StakeUI(this, 0, 1380, 'change', 'placeBet', 'stakeButton')
 
         //Формируем кнопки еще и стоп
         this.chooseUIContainer = new ChooseUI(this, 0, config.scale.height + 300, 'hitButton', 'standButton')
