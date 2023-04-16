@@ -29,11 +29,35 @@ export default class Footer extends Phaser.GameObjects.Container {
 
         const playtimeText = scene.add.text(width / 4 * 3, height / 2, [
             'Your playtime:',
-            '01:07:26'
+            '00:00:00'
         ], font)
             .setOrigin(0.5) // Написать потом логику обновления времени в игре
 
         this.add([footer, balanceText, playtimeText])
+
+        this.playtimeSeconds = 0
+
+        this.scene.time.addEvent({
+            delay: 1000, // вызываем обработчик раз в секунду
+            callback: this.updatePlaytime, // метод, который обновляет время
+            callbackScope: this,
+            loop: true // позволяет повторять событие каждый раз через указанный интервал
+        });
+    }
+
+    updatePlaytime() {
+        this.playtimeSeconds++
+
+        const hours = Math.floor(this.playtimeSeconds / 3600)
+        const minutes = Math.floor((this.playtimeSeconds % 3600) / 60)
+        const seconds = Math.floor(this.playtimeSeconds % 60)
+
+        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+        this.list[2].setText([
+            'Your playtime:',
+            formattedTime
+        ]);
     }
 
     updateBalanceWinText(previousValue, currentValue) {
