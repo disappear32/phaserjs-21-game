@@ -2,5 +2,8 @@
 	"short_name": "21",
   	"name": "21 Game",
 	"display": "fullscreen",
-	"orientation": "portrait"
+	"orientation": "portrait",
+	"icons": [
+		{ "src": "assets/menu_icon.png", "type": "image/png", "sizes": "512x512" }
+	  ]
 }
