@@ -4,10 +4,6 @@ import SettingButton from '../buttons/SettingButton.js'
 import BonusButton from '../buttons/BonusButton.js'
 
 export default class CommonUI extends Phaser.GameObjects.Container {
-    topInfo
-    footer
-    setting_button
-    bonus_button
 
     constructor(scene, x, y, key_top, key_setting, key_bonus) {
         const topInfoBlock = new TopInfoBlock(scene, 265, 0, key_top)
@@ -19,11 +15,5 @@ export default class CommonUI extends Phaser.GameObjects.Container {
 
         this.setDepth(2)
         scene.add.existing(this)
-
-        this.topInfo = this.list[0]
-        this.footer = this.list[3]
-        this.setting_button = this.list[1]
-        this.bonus_button = this.list[2]
-    }
-    
+    }   
 }

@@ -147,6 +147,7 @@ export default class Game extends Phaser.Scene {
 
     update() {
         //console.log(game.loop.actualFps)
+        //this.commonUIContainer.list[3].updatePlaytime()
     }
 
     startGame() {
@@ -260,6 +261,9 @@ export default class Game extends Phaser.Scene {
     }
 
     clearGameField(onCompleteCallback) {
+        this.dealerCardsInfoBlock.setValueDisable()
+        this.playerCardsInfoBlock.setValueDisable()
+
         for (let i = 0; i < this.dealerOpenCardsCount; i++) {
             this.dealerCardsGroup.children.entries[i].flipFront(() => {
 
@@ -273,9 +277,6 @@ export default class Game extends Phaser.Scene {
 
                     this.playerOpenCardsCount = 0
                     this.dealerOpenCardsCount = 0
-
-                    this.dealerCardsInfoBlock.setValueDisable()
-                    this.playerCardsInfoBlock.setValueDisable()
 
                     onCompleteCallback()
                 }
