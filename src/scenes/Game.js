@@ -52,18 +52,38 @@ export default class Game extends Phaser.Scene {
     }
 
     preload() {
-        const progress = this.add.graphics();
+        const progress = this.add.graphics()
+        const startAngle = Math.PI * 3 / 2
+
+        const text = progress.scene.add.text(
+            config.scale.width / 2,
+            config.scale.height / 2 + 250,
+            'Loading: 0%',
+            {
+                font: '40px Inter', fill: '#FFFFFF'
+            })
+
+        text.setOrigin(0.5, 0.5)
+        progress.text = text
 
         this.load.on('progress', function (value) {
-            progress.clear();
-            progress.fillStyle(0xffffff, 1);
-            progress.fillRect(0, config.scale.height / 2, config.scale.width * value, 60);
+            progress.clear()
 
-        });
+            const endAngle = startAngle + value * 2 * Math.PI
+            progress.beginPath()
+            progress.lineStyle(30, 0xffffff, 1.0)
+            progress.arc(config.scale.width / 2, config.scale.height / 2, 150, startAngle, endAngle, false);
+            progress.strokePath()
+            progress.closePath()
+
+            const progressText = Math.floor(value * 100) + '%'
+            progress.text.setText('Loading: ' + progressText);
+
+        })
 
         this.load.on('complete', function () {
             progress.destroy();
-        });
+        })
 
         this.load.setPath('assets/')
 
