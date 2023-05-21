@@ -5,7 +5,7 @@ export default class TopInfoBlock extends Phaser.GameObjects.Container  {
         //Настройки
         const width = 550
         const height = 160
-        const text = 'Make your bet!'
+        const text = 'Good luck!'
         const font = {
             fontFamily: 'Inter',
             fontSize: 48,

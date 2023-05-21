@@ -4,7 +4,7 @@ export default class StakeButton extends Button {
     constructor(scene, x, y, key) {
         const width = 550
         const height = 100
-        const text = `💰 Your stake: ${scene.stake} RUB`
+        const text = `💰 Your value: ${scene.stake} FUN`
         const font = {
             fontFamily: 'Inter',
             fontSize: 36,
@@ -13,14 +13,13 @@ export default class StakeButton extends Button {
         }
 
         const callback = function () {
-            console.log('Stake setting')
         }
 
         super(scene, x, y, width, height, key, text, font, callback)
     }
 
     updateText(sum, scene) {
-        this.list[1].setText(`💰 Your stake: ${sum} RUB`)
+        this.list[1].setText(`💰 Your value: ${sum} FUN`)
 
         const timeline = scene.tweens.timeline({
             onComplete: () => {

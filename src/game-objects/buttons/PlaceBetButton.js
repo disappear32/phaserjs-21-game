@@ -4,7 +4,7 @@ export default class PlaceBet extends Button {
     constructor(scene, x, y, key) {
         const width = 450
         const height = 150
-        const text = 'Place bet'
+        const text = 'Start game'
         const font = {
             fontFamily: 'Inter',
             fontSize: 48,

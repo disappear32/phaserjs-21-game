@@ -4,7 +4,7 @@ export default class ChangeStakeButton extends Button {
     constructor(scene, x, y, key) {
         const width = 950
         const height = 150
-        const text = 'Change stake'
+        const text = 'Change value'
         const font = {
             fontFamily: 'Inter',
             fontSize: 48,

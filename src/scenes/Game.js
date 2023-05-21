@@ -171,7 +171,7 @@ export default class Game extends Phaser.Scene {
     }
 
     startGame() {
-        this.updateUI('start') //Выезжают кнопки hit и stand, ui ставки уезжает вбок
+        this.updateUI('start') //Выезжают кнопки hit и stand, ui уезжает вбок
         this.updateTextTopInfo('Take your move!') //Обновляем текст в инфоблоке
         this.updateBalance(-this.stake) //Обновляем баланс
         this.setPlayerBackgroundActive() //Подсвечиваем обводку поля игрока
@@ -205,7 +205,7 @@ export default class Game extends Phaser.Scene {
 
             this.updateTextTopInfo([
                 'You have won:',
-                `${winSum} RUB!`
+                `${winSum} FUN!`
             ])
             this.updateWinBalance(winSum)
 
@@ -273,8 +273,8 @@ export default class Game extends Phaser.Scene {
     }
 
     changeChoose() {
-        this.updateTextTopInfo('Make your bet!') //Обновляем текст в инфоблоке
-        this.updateUI('change') //Появляется ui ставки, кнопки repeat и change уезжают вбок
+        this.updateTextTopInfo('Good luck!') //Обновляем текст в инфоблоке
+        this.updateUI('change') //Появляется ui, кнопки repeat и change уезжают вбок
 
         this.clearGameField(() => {
         })

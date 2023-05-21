@@ -23,7 +23,7 @@ export default class Footer extends Phaser.GameObjects.Container {
 
         const balanceText = scene.add.text(width / 4, height / 2, [
             'Balance:',
-            `${scene.balance} RUB`
+            `${scene.balance} FUN`
         ], font)
             .setOrigin(0.5)
 
@@ -80,7 +80,7 @@ export default class Footer extends Phaser.GameObjects.Container {
 
                 this.list[1].setText([
                     'Balance:',
-                    `${value} RUB`
+                    `${value} FUN`
                 ])
             }
         })
@@ -97,7 +97,7 @@ export default class Footer extends Phaser.GameObjects.Container {
 
                 this.list[1].setText([
                     'Balance:',
-                    `${value} RUB`
+                    `${value} FUN`
                 ])
             }
         })

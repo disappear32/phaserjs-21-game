@@ -5,8 +5,8 @@ export default class RepeatBetButton extends Button {
         const width = 950
         const height = 150
         const text = [
-            'Repeat bet',
-            `${scene.stake} RUB`
+            'Repeat game',
+            `${scene.stake} FUN`
         ]
         const font = {
             fontFamily: 'Inter',
@@ -24,8 +24,8 @@ export default class RepeatBetButton extends Button {
 
     updateStakeValue(value) {
         this.list[1].setText([
-            'Repeat bet',
-            `${value} RUB`
+            'Repeat game',
+            `${value} FUN`
         ])
 
         return this

@@ -14,13 +14,9 @@ export default class PlusStakeButton extends Button {
 
         const changeValue = 50
         const callback = function () {
-            //scene.updateStake(changeValue)
+            scene.updateStake(changeValue)
         }
 
         super(scene, x, y, width, height, key, text, font, callback)
-
-        this.button.on('pointerdown', () => {
-            scene.updateStake(changeValue)
-        })
     }
 }
